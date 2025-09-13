@@ -1,0 +1,2349 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWDeli - ระบบส่งอาหาร</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { 
+            font-family: 'Kanit', sans-serif;
+        }
+ /* Animated Background */
+        .animated-bg {
+            background: linear-gradient(-45deg, #2141cf, #7f28d6, #f093fb, #da122d, #1278d1, #00f2fe);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        
+        .dark-bg {
+            background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533483);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Floating Bubbles */
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .slide-up { animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        
+        /* Page transition animations */
+        .page-enter { animation: pageEnter 0.4s ease-out; }
+        @keyframes pageEnter { 
+            from { opacity: 0; transform: translateX(20px); } 
+            to { opacity: 1; transform: translateX(0); } 
+        }
+        
+        .page-exit { animation: pageExit 0.3s ease-in; }
+        @keyframes pageExit { 
+            from { opacity: 1; transform: translateX(0); } 
+            to { opacity: 0; transform: translateX(-20px); } 
+        }
+        
+        .modal-enter { animation: modalEnter 0.3s ease-out; }
+        @keyframes modalEnter { 
+            from { opacity: 0; transform: scale(0.9); } 
+            to { opacity: 1; transform: scale(1); } 
+        }
+        
+        .card-stagger { animation: cardStagger 0.5s ease-out; }
+        @keyframes cardStagger { 
+            from { opacity: 0; transform: translateY(30px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        .card-simultaneous { animation: cardSimultaneous 0.6s ease-out; }
+        @keyframes cardSimultaneous { 
+            from { opacity: 0; transform: translateY(40px) scale(0.95); } 
+            to { opacity: 1; transform: translateY(0) scale(1); } 
+        }
+        
+        .section-slide-in { animation: sectionSlideIn 0.5s ease-out; }
+        @keyframes sectionSlideIn { 
+            from { opacity: 0; transform: translateX(30px); } 
+            to { opacity: 1; transform: translateX(0); } 
+        }
+        
+        .home-enter { animation: homeEnter 0.6s ease-out; }
+        @keyframes homeEnter { 
+            from { opacity: 0; transform: translateY(30px) scale(0.95); } 
+            to { opacity: 1; transform: translateY(0) scale(1); } 
+        }
+        
+        .language-switch { animation: languageSwitch 0.4s ease-in-out; }
+        @keyframes languageSwitch { 
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        /* Hover Animations */
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .hover-scale {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+        
+        .hover-glow {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .hover-glow:hover {
+            box-shadow: 0 0 20px rgba(249, 115, 22, 0.4);
+        }
+        .hover-glow::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        .hover-glow:hover::before {
+            left: 100%;
+        }
+        
+        .hover-bounce {
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .hover-bounce:hover {
+            transform: scale(1.1);
+        }
+        
+        .hover-rotate {
+            transition: all 0.3s ease;
+        }
+        .hover-rotate:hover {
+            transform: rotate(5deg) scale(1.05);
+        }
+        
+        .hover-slide {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .hover-slide::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #f97316, #dc2626);
+            transition: width 0.3s ease;
+        }
+        .hover-slide:hover::after {
+            width: 100%;
+        }
+        
+        .pulse-on-hover:hover {
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .gradient-shift {
+            background-size: 200% 200%;
+            transition: all 0.3s ease;
+        }
+        .gradient-shift:hover {
+            background-position: right center;
+        }
+
+        /* Logo styles */
+        .logo-container {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .logo-container:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="animated-bg min-h-screen transition-all duration-300">
+    <!-- Floating Bubbles -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="bubble w-4 h-4" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="bubble w-6 h-6" style="left: 20%; animation-delay: 2s;"></div>
+        <div class="bubble w-3 h-3" style="left: 35%; animation-delay: 4s;"></div>
+        <div class="bubble w-5 h-5" style="left: 50%; animation-delay: 1s;"></div>
+        <div class="bubble w-4 h-4" style="left: 70%; animation-delay: 3s;"></div>
+        <div class="bubble w-7 h-7" style="left: 85%; animation-delay: 5s;"></div>
+    </div>
+    <!-- Header -->
+    <header class="bg-gray-1000 shadow-2xl sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-3 logo-container" onclick="goToHome()">
+                    <div class="w-10 h-10 md:w-12 md:h-12 ">
+                        <img id="appLogo" src="https://lh3.googleusercontent.com/d/1ISkO6XuqH8uVFKbzWQlKBGytsMRgKgXD" alt="Logo" class="logo-image w-full h-full object-cover" 
+                             onerror="this.style.display='none';">
+                    </div>
+                    <h1 class="text-lg md:text-2xl font-bold text-gray-800">SWDeliProject</h1>
+                </div>
+                
+
+            </div>
+            <div id="userInfo" class="hidden flex items-center space-x-2">
+                <!-- Profile Icon -->
+                <div class="relative">
+                    <div id="headerProfileContainer" class="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white text-xs md:text-sm font-bold cursor-pointer hover-bounce overflow-hidden border-2 border-white shadow-lg" onclick="showUserSettings()">
+                        <span id="headerProfileInitials"></span>
+                        <img id="headerProfileImage" class="w-full h-full object-cover hidden" alt="Profile Picture">
+                    </div>
+                </div>
+                
+                <span id="welcomeText" class="text-gray-600 text-xs md:text-sm hidden md:block"></span>
+                
+                <div class="flex space-x-1 md:space-x-2">
+                    <button onclick="toggleUserSettings()" class="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 md:px-4 md:py-2 rounded-lg hover-bounce flex items-center space-x-1 md:space-x-2">
+                        <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        <span class="text-xs md:text-sm">ตั้งค่า</span>
+                    </button>
+                    <button onclick="toggleOrderTracking()" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 md:px-4 md:py-2 rounded-lg hover-bounce flex items-center space-x-1 md:space-x-2">
+                        <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                        </svg>
+                        <span class="text-xs md:text-sm">ติดตาม</span>
+                    </button>
+                    <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 md:px-4 md:py-2 rounded-lg hover-bounce flex items-center space-x-1 md:space-x-2">
+                        <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                        </svg>
+                        <span class="text-xs md:text-sm">ออก</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Login/Register Section -->
+    <div id="authSection" class="container mx-auto px-4 py-8">
+        <div class="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8 fade-in">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">ยินดีต้อนรับ</h2>
+                <p class="text-gray-600">เข้าสู่ระบบหรือสมัครสมาชิกเพื่อสั่งอาหาร</p>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm">
+                <h3 class="text-xl font-semibold mb-4 text-center">เข้าสู่ระบบ</h3>
+                <form onsubmit="login(event)">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">อีเมล</label>
+                        <input type="email" id="loginEmail" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">รหัสผ่าน</label>
+                        <input type="password" id="loginPassword" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                    </div>
+                    <button type="submit" 
+                            class="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 rounded-lg font-semibold hover-glow gradient-shift">
+                        เข้าสู่ระบบ
+                    </button>
+                </form>
+                <p class="text-center mt-4 text-gray-600">
+                    <span>ยังไม่มีบัญชี?</span>
+                    <button onclick="showRegister()" class="text-orange-500 hover:text-orange-600 font-medium">สมัครสมาชิก</button>
+                </p>
+            </div>
+
+            <!-- OTP Verification Form -->
+            <div id="otpForm" class="hidden">
+                <h3 class="text-xl font-semibold mb-4 text-center">ยืนยันตัวตน</h3>
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                    </div>
+                    <p class="text-gray-600 text-sm">เราได้ส่งรหัส OTP ไปยัง</p>
+                    <p id="otpDestination" class="font-medium text-gray-800"></p>
+                </div>
+                
+                <form onsubmit="verifyOTP(event)">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">รหัส OTP (6 หลัก)</label>
+                        <input type="text" id="otpCode" required maxlength="6" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center text-2xl font-mono tracking-widest"
+                               placeholder="xxxxxx">
+                    </div>
+                    
+                    <div class="mb-6 text-center">
+                        <p class="text-sm text-gray-600 mb-2">รหัสจะหมดอายุใน <span id="otpTimer" class="font-medium text-red-500">05:00</span></p>
+                        <button type="button" onclick="resendOTP()" id="resendBtn" disabled
+                                class="text-orange-500 hover:text-orange-600 font-medium text-sm disabled:text-gray-400 disabled:cursor-not-allowed">
+                            ส่งรหัสใหม่
+                        </button>
+                    </div>
+                    
+                    <button type="submit" 
+                            class="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-lg font-semibold hover-glow gradient-shift">
+                        ยืนยันรหัส OTP
+                    </button>
+                </form>
+                
+                <button onclick="backToLogin()" class="w-full mt-4 text-gray-600 hover:text-gray-800 font-medium">
+                    ← กลับไปหน้าเข้าสู่ระบบ
+                </button>
+            </div>
+
+            <!-- Additional Info Form -->
+            <div id="additionalInfoForm" class="hidden">
+                <h3 class="text-xl font-semibold mb-4 text-center">ข้อมูลเพิ่มเติม</h3>
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <p class="text-gray-600 text-sm">กรุณากรอกข้อมูลเพิ่มเติมเพื่อใช้งานระบบ</p>
+                </div>
+                
+                <form onsubmit="saveAdditionalInfo(event)">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Username</label>
+                        <input type="text" id="username" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                               placeholder="กรอก username ที่ต้องการ">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">ชั้น</label>
+                        <select id="floor" required 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                            <option value="">เลือกชั้น</option>
+                            <option value="ม.1">ม.1</option>
+                            <option vaSlue="ม.2">ม.2</option>
+                            <option value="ม.3">ม.3</option>
+                            <option value="ม.4">ม.4</option>
+                            <option value="ม.5">ม.5</option>
+                            <option value="ม.6">ม.6</option>
+                        </select>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">ห้อง</label>
+                        <select id="room" required 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                            <option value="">เลือกห้อง</option>
+                            <option value="1">ห้อง 1</option>
+                            <option value="2">ห้อง 2</option>
+                            <option value="3">ห้อง 3</option>
+                            <option value="4">ห้อง 4</option>
+                            <option value="5">ห้อง 5</option>
+                            <option value="6">ห้อง 6</option>
+                            <option value="7">ห้อง 7</option>
+                            <option value="8">ห้อง 8</option>
+                            <option value="9">ห้อง 9</option>
+                            <option value="10">ห้อง 10</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" 
+                            class="w-full bg-gradient-to-r from-green-500 to-blue-500 text-white py-3 rounded-lg font-semibold hover-glow gradient-shift">
+                        บันทึกข้อมูลและเข้าสู่ระบบ
+                    </button>
+                </form>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="hidden">
+                <h3 class="text-xl font-semibold mb-4 text-center">สมัครสมาชิก</h3>
+                <form onsubmit="register(event)">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">ชื่อ-นามสกุล</label>
+                        <input type="text" id="registerName" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">อีเมล</label>
+                        <input type="email" id="registerEmail" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">เบอร์โทรศัพท์</label>
+                        <input type="tel" id="registerPhone" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">รหัสผ่าน</label>
+                        <input type="password" id="registerPassword" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                    </div>
+                    <button type="submit" 
+                            class="w-full bg-gradient-to-r from-green-500 to-blue-500 text-white py-3 rounded-lg font-semibold hover-glow gradient-shift">
+                        สมัครสมาชิก
+                    </button>
+                </form>
+                <p class="text-center mt-4 text-gray-600">
+                    มีบัญชีแล้ว? 
+                    <button onclick="showLogin()" class="text-orange-500 hover:text-orange-600 font-medium">เข้าสู่ระบบ</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Settings Section -->
+    <div id="userSettingsSection" class="hidden container mx-auto px-4 py-8 section-slide-in">
+        <div class="max-w-2xl mx-auto">
+            <div class="flex items-center mb-8">
+                <button onclick="backToMenuFromSettings()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg mr-4 transition-colors">
+                    ← กลับ
+                </button>
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800">ตั้งค่าผู้ใช้</h2>
+                    <p class="text-gray-600">แก้ไขข้อมูลส่วนตัวของคุณ</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-xl p-8">
+                <!-- Profile Picture Section -->
+                <div class="text-center mb-8">
+                    <div class="relative inline-block">
+                        <div id="profilePictureContainer" class="w-32 h-32 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white text-4xl font-bold mx-auto mb-4 overflow-hidden">
+                            <span id="profileInitials"></span>
+                            <img id="profileImage" class="w-full h-full object-cover hidden" alt="Profile Picture">
+                        </div>
+                        <button onclick="document.getElementById('profileImageInput').click()" 
+                                class="absolute bottom-0 right-0 bg-purple-500 hover:bg-purple-600 text-white w-10 h-10 rounded-full flex items-center justify-center transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </button>
+                        <input type="file" id="profileImageInput" accept="image/*" class="hidden" onchange="handleProfileImageUpload(event)">
+                    </div>
+                    <button onclick="removeProfileImage()" id="removeImageBtn" class="hidden text-red-500 hover:text-red-600 text-sm font-medium">
+                        ลบรูปโปรไฟล์
+                    </button>
+                </div>
+
+                <!-- Settings Form -->
+                <form onsubmit="saveUserSettings(event)" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">ชื่อ-นามสกุล</label>
+                            <input type="text" id="settingsName" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Username</label>
+                            <input type="text" id="settingsUsername" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">อีเมล</label>
+                            <input type="email" id="settingsEmail" disabled 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed">
+                            <p class="text-xs text-gray-500 mt-1">ไม่สามารถแก้ไขได้</p>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">เบอร์โทรศัพท์</label>
+                            <input type="tel" id="settingsPhone" disabled 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed">
+                            <p class="text-xs text-gray-500 mt-1">ไม่สามารถแก้ไขได้</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">ชั้น</label>
+                            <select id="settingsFloor" required 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                <option value="">เลือกชั้น</option>
+                                <option value="ม.1">ม.1</option>
+                                <option value="ม.2">ม.2</option>
+                                <option value="ม.3">ม.3</option>
+                                <option value="ม.4">ม.4</option>
+                                <option value="ม.5">ม.5</option>
+                                <option value="ม.6">ม.6</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">ห้อง</label>
+                            <select id="settingsRoom" required 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                <option value="">เลือกห้อง</option>
+                                <option value="1">ห้อง 1</option>
+                                <option value="2">ห้อง 2</option>
+                                <option value="3">ห้อง 3</option>
+                                <option value="4">ห้อง 4</option>
+                                <option value="5">ห้อง 5</option>
+                                <option value="6">ห้อง 6</option>
+                                <option value="7">ห้อง 7</option>
+                                <option value="8">ห้อง 8</option>
+                                <option value="9">ห้อง 9</option>
+                                <option value="10">ห้อง 10</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="border-t pt-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">เปลี่ยนรหัสผ่าน</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-gray-700 text-sm font-medium mb-2">รหัสผ่านปัจจุบัน</label>
+                                <input type="password" id="currentPassword" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-medium mb-2">รหัสผ่านใหม่</label>
+                                    <input type="password" id="newPassword" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-medium mb-2">ยืนยันรหัสผ่านใหม่</label>
+                                    <input type="password" id="confirmNewPassword" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500">หากไม่ต้องการเปลี่ยนรหัสผ่าน ให้เว้นว่างไว้</p>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-4 pt-6">
+                        <button type="submit" 
+                                class="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-lg font-semibold hover-glow gradient-shift">
+                            บันทึกการเปลี่ยนแปลง
+                        </button>
+                        <button type="button" onclick="cancelSettingsChanges()" 
+                                class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 hover-bounce">
+                            ยกเลิก
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Tracking Section -->
+    <div id="orderTrackingSection" class="hidden container mx-auto px-4 py-8 section-slide-in">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex items-center mb-8">
+                <button onclick="backToMenu()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg mr-4 transition-colors">
+                    ← กลับ
+                </button>
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800">ติดตามออร์เดอร์</h2>
+                    <p class="text-gray-600">ดูสถานะการสั่งซื้อของคุณ</p>
+                </div>
+            </div>
+
+            <div id="ordersList" class="space-y-6">
+                <!-- Orders will be populated here -->
+            </div>
+
+            <div id="noOrders" class="hidden text-center py-12">
+                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">ยังไม่มีออร์เดอร์</h3>
+                <p class="text-gray-600">เมื่อคุณสั่งอาหาร ออร์เดอร์จะแสดงที่นี่</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Food Menu Section -->
+    <div id="menuSection" class="hidden container mx-auto px-4 py-8 home-enter">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">ร้านอาหารศอวอ</h2>
+            <p class="text-gray-600">เลือกร้านที่คุณต้องการสั่งอาหาร</p>
+        </div>
+
+        <!-- Restaurant Categories -->
+        <div class="flex justify-center mb-8 space-x-2 overflow-x-auto px-4 pb-2">
+            <button onclick="filterRestaurant('all')" class="category-btn bg-orange-500 text-white px-4 py-2 rounded-full font-medium whitespace-nowrap hover-bounce text-sm">
+                ทั้งหมด
+            </button>
+            <button onclick="filterRestaurant('bubble-tea')" class="category-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-full font-medium whitespace-nowrap hover:bg-gray-300 hover-bounce text-sm">
+                ชานมไข่มุก
+            </button>
+            <button onclick="filterRestaurant('rice-curry')" class="category-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-full font-medium whitespace-nowrap hover:bg-gray-300 hover-bounce text-sm">
+                ข้าวแกง
+            </button>
+            <button onclick="filterRestaurant('noodles')" class="category-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-full font-medium whitespace-nowrap hover:bg-gray-300 hover-bounce text-sm">
+                ก๋วยเตี๋ยว
+            </button>
+            <button onclick="filterRestaurant('Fried-food')" class="category-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-full font-medium whitespace-nowrap hover:bg-gray-300 hover-bounce text-sm">
+                ของทอด
+            </button>
+        </div>
+
+        <!-- Restaurant Grid -->
+        <div id="restaurantGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Restaurant items will be populated by JavaScript -->
+        </div>
+
+        <!-- Restaurant Menu Section -->
+        <div id="restaurantMenuSection" class="hidden">
+            <div class="flex items-center mb-6">
+                <button onclick="backToRestaurants()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg mr-4 transition-colors">
+                    ← กลับ
+                </button>
+                <div>
+                    <h3 id="restaurantName" class="text-2xl font-bold text-gray-800"></h3>
+                    <p id="restaurantDescription" class="text-gray-600"></p>
+                </div>
+            </div>
+            
+            <!-- Menu Items Grid -->
+            <div id="menuGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Menu items will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Cart Summary -->
+        <div id="cartSummary" class="hidden fixed bottom-0 left-0 right-0 bg-white shadow-2xl border-t p-3 md:p-4 slide-up">
+            <div class="container mx-auto flex justify-between items-center">
+                <div>
+                    <span id="cartCount" class="font-semibold text-gray-800 text-sm md:text-base">0 รายการ</span>
+                    <span id="cartTotal" class="text-orange-500 font-bold text-lg md:text-xl ml-2 md:ml-4">฿0</span>
+                </div>
+                <button onclick="showOrderSummary()" 
+                        class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 md:px-8 md:py-3 rounded-lg font-semibold hover-glow gradient-shift pulse-on-hover text-sm md:text-base">
+                    ดูรายการสั่งซื้อ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Summary Modal -->
+    <div id="orderModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 md:p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full max-h-[95vh] md:max-h-[90vh] overflow-y-auto modal-enter">
+            <div class="p-4 md:p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800">สรุปรายการสั่งซื้อ</h3>
+                    <button onclick="closeOrderModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                </div>
+
+                <div id="orderItems" class="space-y-4 mb-6">
+                    <!-- Order items will be populated here -->
+                </div>
+
+                <div class="border-t pt-4 mb-6">
+                    <div class="flex justify-between items-center text-xl font-bold">
+                        <span>ยอดรวม:</span>
+                        <span id="orderTotal" class="text-orange-500">฿0</span>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">ส่งห้องอะไรและตึกอะไร</label>
+                    <textarea id="deliveryAddress" required 
+                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                              rows="3" placeholder="เช่น ห้อง 301 ตึก 1 เป็นต้นน"></textarea>
+                </div>
+
+                <button onclick="confirmOrder()" 
+                            class="w-full bg-gradient-to-r from-red-500 to-purple-500 text-white py-3 rounded-lg font-semibold hover-glow gradient-shift text-sm">
+                    ยืนยันการสั่งซื้อ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Item Options Modal -->
+    <div id="itemOptionsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 md:p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full max-h-[95vh] md:max-h-[90vh] overflow-y-auto">
+            <div class="p-4 md:p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 id="itemName" class="text-2xl font-bold text-gray-800"></h3>
+                    <button onclick="closeItemOptionsModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                </div>
+
+                <div id="itemOptionsContent" class="space-y-6">
+                    <!-- Options will be populated here -->
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">หมายเหตุ</label>
+                    <textarea id="deliveryAddress" required 
+                              class="w-full y-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent Hover-"
+                              rows="3" placeholder="กรณีเลือกกCustoms อาหาร เครป น้ำชานมไข่มุก เป็นต้น"></textarea>
+                </div>
+
+                <div class="border-t pt-4 mt-6">
+                    <div class="flex justify-between items-center text-xl font-bold mb-4">
+                        <span>ราคา:</span>
+                        <span id="itemPrice" class="text-orange-500">฿0</span>
+                    </div>
+                    <button onclick="addItemToCart()" 
+                            class="w-full bg-gradient-to-r from-red-500 to-purple-500 text-white py-3 rounded-lg font-semibold hover-glow gradient-shift text-sm">
+                        เพิ่มลงตะกร้า
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Confirmation Modal -->
+    <div id="confirmationModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 md:p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-4 md:p-8 text-center modal-enter">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">สั่งซื้อสำเร็จ!</h3>
+            <p class="text-gray-600 mb-4">ออร์เดอร์ของคุณได้ถูกส่งไปยังร้านอาหารแล้ว</p>
+            <div id="orderDetails" class="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+                <!-- Order details will be shown here -->
+            </div>
+            <button onclick="closeConfirmationModal()" 
+                    class="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-red-600 transition-all">
+                กลับสู่หน้าหลัก
+            </button>
+        </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 md:p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-4 md:p-8 text-center modal-enter">
+            <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">ออกจากระบบ</h3>
+            <p class="text-gray-600 mb-6">คุณแน่ใจที่จะออกจากระบบหรือไม่?</p>
+            <div class="flex space-x-4">
+                <button onclick="cancelLogout()" 
+                        class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold transition-colors">
+                    ยกเลิก
+                </button>
+                <button onclick="confirmLogout()" 
+                        class="flex-1 bg-gradient-to-r from-red-500 to-red-600 text-white py-3 rounded-lg font-semibold hover:from-red-600 hover:to-red-700 transition-all">
+                    ตกลง
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Success Modal -->
+    <div id="settingsSuccessModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 md:p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-4 md:p-8 text-center modal-enter">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">บันทึกสำเร็จ!</h3>
+            <p class="text-gray-600 mb-6">ข้อมูลของคุณได้ถูกบันทึกเรียบร้อยแล้ว</p>
+            <button onclick="closeSettingsSuccessModal()" 
+                    class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 rounded-lg font-semibold rounded-lg font-semibold hover-glow gradient-shift text-sm">
+                ตกลง
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Restaurant data with Google Drive image support
+        const restaurants = [
+            {
+                id: 1,
+                name: 'ร้านชานมไข่มุก',
+                category: 'bubble-tea',
+                image: 'https://lh3.googleusercontent.com/d/1ea7kxw7aTwhyYBDFZ2UloFP3jEr-fPga',
+                description: 'ชานมไข่มุกอร่อยกลมกล่อม'
+            },
+            {
+                id: 2,
+                name: 'ร้านข้าวแกง',
+                category: 'rice-curry',
+                image: 'https://lh3.googleusercontent.com/d/16NmR2uo4UZZDjOCSRMH1OK7AyR1DSfTr',
+                description: 'ข้าวแกงรสชาติต้นตำรับ'
+            },
+            {
+                id: 3,
+                name: 'ร้านก๋วยเตี๋ยว',
+                category: 'noodles',
+                image: 'https://lh3.googleusercontent.com/d/1bNOSgYYLCPa_UIeP62TxjP2N8p2qeyRw',
+                description: 'ก๋วยเตี๋ยวรสเด็ด'
+            },
+            {
+                id: 4,
+                name: 'ร้านข้าวแกง',
+                category: 'rice-curry',
+                image: 'https://lh3.googleusercontent.com/d/16NmR2uo4UZZDjOCSRMH1OK7AyR1DSfTr',
+                description: 'ข้าวอร่อย ให้เยอะสัสๆ'
+            },
+            {
+                id: 5,
+                name: 'ร้านของทอด+เครปไม้เอก',
+                category: 'Fried-food',
+                image: 'https://lh3.googleusercontent.com/d/1CaI_9GIS8WZLb9_pPlL67R87IdDfjPGW',
+                description: 'ของทอดอร่อย เครปอย่างลำ'
+            },
+            {
+                id: 6,
+                name: 'ร้านก๋วยเตี๋ยว',
+                category: 'noodles',
+                image: 'https://lh3.googleusercontent.com/d/1bNOSgYYLCPa_UIeP62TxjP2N8p2qeyRw',
+                description: 'ก๋วยเตี๋ยวดีต้องก๋วยเตี๋ยวศอวอ'
+            },
+            {
+                id: 7,
+                name: 'ร้านของทอด+มาม่า',
+                category: 'Fried-food',
+                image: 'https://lh3.googleusercontent.com/d/1CaI_9GIS8WZLb9_pPlL67R87IdDfjPGW',
+                description: 'ของทอดอร่อย มาม่าก็ลำ'
+            },
+            {
+                id: 8,
+                name: 'ร้านชานมเจ๊โจ้',
+                category: 'bubble-tea',
+                image: 'https://lh3.googleusercontent.com/d/1ea7kxw7aTwhyYBDFZ2UloFP3jEr-fPga',
+                description: 'อร่อย ให้มุกเยอะชิบหาย'
+            }
+        ];
+
+        // Menu data for each restaurant with Google Drive image support
+        const menuData = {
+            1: [ // ร้านชานมไข่มุก
+                {
+                    id: 101,
+                    name: 'ชานมไต้หวัน',
+                    basePrice: 20,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        toppings: {
+                            label: 'ท็อปปิ้ง',
+                            type: 'checkbox',
+                            choices: [
+                                { id: 'pearl', name: 'ไข่มุกบราวน์ชูก้า', price: 0 },
+                                { id: 'brown-sugar', name: 'บราวน์ชูก้า', price: 0 },
+                                { id: 'coconut', name: 'มุกบุกบราวน์ชูก้า', price: 0 }
+                            ]
+                        }
+                    }
+                },
+                {
+                    id: 102,
+                    name: 'ชาไทย',
+                    basePrice: 20,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        toppings: {
+                            label: 'ท็อปปิ้ง',
+                            type: 'checkbox',
+                            choices: [
+                                { id: 'pearl', name: 'ไข่มุกดำ', price: 0 },
+                                { id: 'brown-sugar', name: 'บราวน์ชูก้า', price: 0 },
+                                { id: 'coconut', name: 'มุกมะพร้าว', price: 0 }
+                            ]
+                        }
+                    }
+                },
+                {
+                    id: 103,
+                    name: 'ชาเขียว',
+                    basePrice: 20,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        toppings: {
+                            label: 'ท็อปปิ้ง',
+                            type: 'checkbox',
+                            choices: [
+                                { id: 'pearl', name: 'ไข่มุกดำ', price: 0 },
+                                { id: 'brown-sugar', name: 'บราวน์ชูก้า', price: 0 },
+                                { id: 'coconut', name: 'มุกมะพร้าว', price: 0 }
+                                
+                            ]
+                        }
+                    }
+                },
+                {
+                    id: 104,
+                    name: 'นมสด',
+                    basePrice: 20,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        toppings: {
+                            label: 'ท็อปปิ้ง',
+                            type: 'checkbox',
+                            choices: [
+                                { id: 'pearl', name: 'ไข่มุกดำ', price: 0 },
+                                { id: 'brown-sugar', name: 'บราวน์ชูก้า', price: 0 },
+                                { id: 'coconut', name: 'มุกมะพร้าว', price: 0 }
+                            ]
+                        }
+                    }
+                }
+            ],
+            2: [ // ร้านข้าวแกง
+                {
+                    id: 201,
+                    name: 'ข้าวยำไก่แซบ',
+                    basePrice: 25,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        type: {
+                            label: 'ประเภท',
+                            type: 'radio',
+                            choices: [
+                                { id: 'normal', name: 'ธรรมดา', price: 0 },
+                                { id: 'special', name: 'พิเศษ', price: 0 }
+                            ]
+                        },
+                        combo: {
+                            label: 'เพิ่มเติม',
+                            type: 'checkbox',
+                            choices: [
+                                { id: 'combo2', name: 'รวม 2 อย่างกับข้าว (30฿)', price: 5 }
+                            ]
+                        }
+                    }
+                },
+                {
+                    id: 202,
+                    name: 'ผัดพริกแกง',
+                    basePrice: 25,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        type: {
+                            label: 'ประเภท',
+                            type: 'radio',
+                            choices: [
+                                { id: 'normal', name: 'ธรรมดา', price: 0 },
+                                { id: 'special', name: 'พิเศษ', price: 0 }
+                            ]
+                        },
+                        combo: {
+                            label: 'เพิ่มเติม',
+                            type: 'checkbox',
+                            choices: [
+                                { id: 'combo2', name: 'รวม 2 อย่างกับข้าว (30฿)', price: 5 }
+                            ]
+                        }
+                    }
+                },
+                {
+                    id: 203,
+                    name: 'ส้มตำ',
+                    basePrice: 25,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        type: {
+                            label: 'ประเภท',
+                            type: 'radio',
+                            choices: [
+                                { id: 'normal', name: 'ธรรมดา', price: 0 },
+                                { id: 'special', name: 'พิเศษ', price: 0 }
+                            ]
+                        },
+                        combo: {
+                            label: 'เพิ่มเติม',
+                            type: 'checkbox',
+                            choices: [
+                                { id: 'combo2', name: 'รวม 2 อย่างกับข้าว (30฿)', price: 5 }
+                            ]
+                        }
+                    }
+                }
+            ],
+            3: [ // ร้านก๋วยเตี๋ยว
+                {
+                    id: 301,
+                    name: 'บะหมี่หมูแดง',
+                    basePrice: 25,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        type: {
+                            label: 'ประเภท',
+                            type: 'radio',
+                            choices: [
+                                { id: 'normal', name: 'ธรรมดา (25฿)', price: 0 },
+                                { id: 'special', name: 'พิเศษ (30฿)', price: 5 }
+                            ]
+                        },
+                        combo: {
+                            label: 'เพิ่มเติม',
+                            type: 'checkbox',
+                            choices: [
+                                { id: 'combo2', name: 'c', price: 5 }
+                            ]
+                        }
+                    }
+                }
+            ],
+            4: [ // ร้านข้าวแกง
+                {
+                    id: 401,
+                    name: 'ข้าวยำไก่แซบ',
+                    basePrice: 25,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        type: {
+                            label: 'ประเภท',
+                            type: 'radio',
+                            choices: [
+                                { id: 'normal', name: 'ธรรมดา', price: 0 },
+                                { id: 'special', name: 'พิเศษ', price: 0 }
+                            ]
+                        },
+                        combo: {
+                            label: 'เพิ่มเติม',
+                            type: 'checkbox',
+                            choices: [
+                                { id: 'combo2', name: 'รวม 2 อย่างกับข้าว (30฿)', price: 5 }
+                            ]
+                        }
+                    }
+                },
+                {
+                    id: 402,
+                    name: 'ผัดพริกแกง',
+                    basePrice: 25,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        type: {
+                            label: 'ประเภท',
+                            type: 'radio',
+                            choices: [
+                                { id: 'normal', name: 'ธรรมดา', price: 0 },
+                                { id: 'special', name: 'พิเศษ', price: 0 }
+                            ]
+                        },
+                        combo: {
+                            label: 'เพิ่มเติม',
+                            type: 'checkbox',
+                            choices: [
+                                { id: 'combo2', name: 'รวม 2 อย่างกับข้าว (30฿)', price: 5 }
+                            ]
+                        }
+                    }
+                },
+                {
+                    id: 403,
+                    name: 'ส้มตำ',
+                    basePrice: 25,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        type: {
+                            label: 'ประเภท',
+                            type: 'radio',
+                            choices: [
+                                { id: 'normal', name: 'ธรรมดา', price: 0 },
+                                { id: 'special', name: 'พิเศษ', price: 0 }
+                            ]
+                        },
+                        combo: {
+                            label: 'เพิ่มเติม',
+                            type: 'checkbox',
+                            choices: [
+                                { id: 'combo2', name: 'รวม 2 อย่างกับข้าว (30฿)', price: 5 }
+                            ]
+                        }
+                    }
+                }
+            ],
+             5: [ // ร้านของทอด+เครปไม้เอก
+                {
+                    id: 501,
+                    name: 'เครปCustoms',
+                    basePrice: 0,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        type: {
+                            label: 'ประเภท',
+                            type: 'radio',
+                            choices: [
+                                { id: '1ใส้', name: 'ธรรมดา', price: 20 },
+                                { id: '2ใส้', name: 'พิเศษ', price: 25 }
+                            ]
+                        }
+                    }
+                },
+                {
+                    id: 502,
+                    name: 'ของทอด',
+                    basePrice: 10,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        type: {
+                            label: 'ประเภท',
+                            type: 'radio',
+                            choices: [
+                                { id: 'normal', name: '10บาท', price: 0 },
+                                { id: 'special', name: '20บาท', price: 20 }
+                                                        ]
+                        }
+                    }
+                },
+            ],
+             6: [ // ร้านก๋วยเตี๋ยว
+                {
+                    id: 601,
+                    name: 'บะหมี่หมูแดง',
+                    basePrice: 25,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        type: {
+                            label: 'ประเภท',
+                            type: 'radio',
+                            choices: [
+                                { id: 'normal', name: 'ธรรมดา (25฿)', price: 0 },
+                                { id: 'special', name: 'พิเศษ (30฿)', price: 5 }
+                            ]
+                        },
+                        combo: {
+                            label: 'เพิ่มเติม',
+                            type: 'checkbox',
+                            choices: [
+                                { id: 'combo2', name: 'c', price: 5 }
+                            ]
+                        }
+                    }
+                }
+            ],
+             7: [ // ร้านของทอด+เครปไม้เอก
+                {
+                    id: 701,
+                    name: 'มาม่าCustomd',
+                    basePrice: 0,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        type: {
+                            label: 'ประเภท',
+                            type: 'radio',
+                            choices: [
+                                { id: '1ใส้', name: 'ธรรมดา', price: 20 },
+                                { id: '2ใส้', name: 'พิเศษ', price: 25 }
+                            ]
+                        }
+                    }
+                },
+                {
+                    id: 702,
+                    name: 'ของทอด',
+                    basePrice: 10,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        type: {
+                            label: 'ประเภท',
+                            type: 'radio',
+                            choices: [
+                                { id: 'normal', name: '10บาท', price: 0 },
+                                { id: 'special', name: '20บาท', price: 20 }
+                                                        ]
+                        }
+                    }
+                },
+            ],
+            8: [ // ร้านชานมไข่มุก
+{
+                    id: 101,
+                    name: 'ชานมไต้หวัน',
+                    basePrice: 20,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        toppings: {
+                            label: 'ท็อปปิ้ง',
+                            type: 'checkbox',
+                            choices: [
+                                { id: 'pearl', name: 'ไข่มุก', price: 0 },
+                                { id: 'brown-sugar', name: 'บราวน์ชูก้า', price: 0 },
+                                { id: 'coconut', name: 'ฟรุ๊ตสลัด', price: 0 }
+                            ]
+                        }
+                    }
+                },
+                {
+                    id: 102,
+                    name: 'ชาไทย',
+                    basePrice: 20,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        toppings: {
+                            label: 'ท็อปปิ้ง',
+                            type: 'checkbox',
+                            choices: [
+                                { id: 'pearl', name: 'ไข่มุก', price: 0 },
+                                { id: 'brown-sugar', name: 'บราวน์ชูก้า', price: 0 },
+                                { id: 'coconut', name: 'ฟรุ๊ตสลัด', price: 0 }
+                            ]
+                        }
+                    }
+                },
+                {
+                    id: 103,
+                    name: 'ชาเขียว',
+                    basePrice: 20,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        toppings: {
+                            label: 'ท็อปปิ้ง',
+                            type: 'checkbox',
+                            choices: [
+                                { id: 'pearl', name: 'ไข่มุก', price: 0 },
+                                { id: 'brown-sugar', name: 'บราวน์ชูก้า', price: 0 },
+                                { id: 'coconut', name: 'ฟรุ๊ตสลัด', price: 0 }
+                            ]
+                        }
+                    }
+                },
+                {
+                    id: 104,
+                    name: 'นมสด',
+                    basePrice: 20,
+                    image: 'https://lh3.googleusercontent.com/d/11bumPVOtAvBijZoQ5oa8Ledmt4L7RH_n',
+                    options: {
+                        toppings: {
+                            label: 'ท็อปปิ้ง',
+                            type: 'checkbox',
+                            choices: [
+                                { id: 'pearl', name: 'ไข่มุก', price: 0 },
+                                { id: 'brown-sugar', name: 'บราวน์ชูก้า', price: 0 },
+                                { id: 'coconut', name: 'ฟรุ๊ตสลัด', price: 0 }
+                            ]
+                        }
+                    }
+                }
+            ],
+        };
+
+        let currentUser = null;
+        let cart = [];
+        let currentCategory = 'all';
+        let currentRestaurant = null;
+        let currentItem = null;
+        let selectedOptions = {};
+        let otpTimer = null;
+        let otpTimeLeft = 300; // 5 minutes in seconds
+        let currentOTP = null;
+        let pendingUser = null;
+        let userOrders = [];
+        let orderStatusTimers = {};
+        let originalUserData = null; // เก็บข้อมูลเดิมก่อนแก้ไข
+
+
+        // Home navigation function
+        function goToHome() {
+            // Hide all sections
+            document.getElementById('userSettingsSection').classList.add('hidden');
+            document.getElementById('orderTrackingSection').classList.add('hidden');
+            
+            // Show appropriate home section based on login status
+            if (currentUser) {
+                document.getElementById('authSection').classList.add('hidden');
+                document.getElementById('menuSection').classList.remove('hidden');
+                
+                // Reset to restaurant list view
+                document.getElementById('restaurantGrid').classList.remove('hidden');
+                document.getElementById('restaurantMenuSection').classList.add('hidden');
+                currentRestaurant = null;
+                
+                // Reset category filter
+                currentCategory = 'all';
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.classList.remove('bg-orange-500', 'text-white');
+                    btn.classList.add('bg-gray-200', 'text-gray-700');
+                });
+                document.querySelector('.category-btn').classList.remove('bg-gray-200', 'text-gray-700');
+                document.querySelector('.category-btn').classList.add('bg-orange-500', 'text-white');
+                
+                renderRestaurants();
+            } else {
+                document.getElementById('menuSection').classList.add('hidden');
+                document.getElementById('authSection').classList.remove('hidden');
+            }
+        }
+
+        // Authentication functions
+        function showRegister() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+
+        function showLogin() {
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+        }
+
+        function register(event) {
+            event.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const phone = document.getElementById('registerPhone').value;
+            const password = document.getElementById('registerPassword').value;
+
+            // Store user data (in real app, this would be sent to server)
+            const userData = { name, email, phone, password };
+            localStorage.setItem('user_' + email, JSON.stringify(userData));
+            
+            alert('สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ');
+            showLogin();
+        }
+
+        function login(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            // Check user credentials (in real app, this would be verified by server)
+            const userData = localStorage.getItem('user_' + email);
+            if (userData) {
+                const user = JSON.parse(userData);
+                if (user.password === password) {
+                    // Check if user has complete profile
+                    if (user.username && user.floor && user.room) {
+                        // User has complete profile, proceed to OTP
+                        pendingUser = user;
+                        sendOTP(email);
+                    } else {
+                        // User needs to complete profile first
+                        pendingUser = user;
+                        document.getElementById('loginForm').classList.add('hidden');
+                        document.getElementById('additionalInfoForm').classList.remove('hidden');
+                    }
+                } else {
+                    alert('รหัสผ่านไม่ถูกต้อง');
+                }
+            } else {
+                alert('ไม่พบผู้ใช้งาน กรุณาสมัครสมาชิกก่อน');
+            }
+        }
+
+        function sendOTP(email) {
+            // Generate random 6-digit OTP
+            currentOTP = Math.floor(100000 + Math.random() * 900000).toString();
+            
+            // In real application, OTP would be sent via SMS/Email
+            console.log('OTP sent:', currentOTP); // For demo purposes
+            alert(`รหัส OTP ของคุณคือ: ${currentOTP} (ในระบบจริงจะส่งผ่าน SMS/Email)`);
+            
+            // Show OTP form
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('otpForm').classList.remove('hidden');
+            
+            // Set destination display
+            const maskedEmail = email.replace(/(.{2})(.*)(@.*)/, '$1***$3');
+            document.getElementById('otpDestination').textContent = maskedEmail;
+            
+            // Start timer
+            startOTPTimer();
+        }
+
+        function startOTPTimer() {
+            otpTimeLeft = 300; // Reset to 5 minutes
+            document.getElementById('resendBtn').disabled = true;
+            
+            otpTimer = setInterval(() => {
+                const minutes = Math.floor(otpTimeLeft / 60);
+                const seconds = otpTimeLeft % 60;
+                document.getElementById('otpTimer').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (otpTimeLeft <= 0) {
+                    clearInterval(otpTimer);
+                    currentOTP = null;
+                    document.getElementById('resendBtn').disabled = false;
+                    document.getElementById('otpTimer').textContent = 'หมดอายุ';
+                }
+                otpTimeLeft--;
+            }, 1000);
+        }
+
+        function verifyOTP(event) {
+            event.preventDefault();
+            const enteredOTP = document.getElementById('otpCode').value;
+            
+            if (!currentOTP) {
+                alert('รหัส OTP หมดอายุแล้ว กรุณาขอรหัสใหม่');
+                return;
+            }
+            
+            if (enteredOTP === currentOTP) {
+                clearInterval(otpTimer);
+                
+                // Complete login process
+                currentUser = pendingUser;
+                pendingUser = null;
+                currentOTP = null;
+                showMenuSection();
+                alert('ยืนยันตัวตนสำเร็จ!');
+            } else {
+                alert('รหัส OTP ไม่ถูกต้อง กรุณาลองใหม่');
+                document.getElementById('otpCode').value = '';
+            }
+        }
+
+        function resendOTP() {
+            if (pendingUser) {
+                sendOTP(pendingUser.email);
+            }
+        }
+
+        function saveAdditionalInfo(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const floor = document.getElementById('floor').value;
+            const room = document.getElementById('room').value;
+            
+            // Update pending user with additional info
+            pendingUser.username = username;
+            pendingUser.floor = floor;
+            pendingUser.room = room;
+            
+            // Save updated user data
+            localStorage.setItem('user_' + pendingUser.email, JSON.stringify(pendingUser));
+            
+            // Hide additional info form first
+            document.getElementById('additionalInfoForm').classList.add('hidden');
+            
+            // Now proceed to OTP verification
+            sendOTP(pendingUser.email);
+        }
+
+        function backToLogin() {
+            // Cancel OTP timer and clear all pending data
+            if (otpTimer) {
+                clearInterval(otpTimer);
+                otpTimer = null;
+            }
+            currentOTP = null;
+            pendingUser = null;
+            otpTimeLeft = 300;
+            
+            // Hide all forms and show login form
+            document.getElementById('otpForm').classList.add('hidden');
+            document.getElementById('additionalInfoForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+            
+            // Clear all form fields
+            document.getElementById('otpCode').value = '';
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('username').value = '';
+            document.getElementById('floor').value = '';
+            document.getElementById('room').value = '';
+            document.getElementById('registerName').value = '';
+            document.getElementById('registerEmail').value = '';
+            document.getElementById('registerPhone').value = '';
+            document.getElementById('registerPassword').value = '';
+        }
+
+        // User Settings Functions
+        function toggleUserSettings() {
+            const settingsSection = document.getElementById('userSettingsSection');
+            const menuSection = document.getElementById('menuSection');
+            const trackingSection = document.getElementById('orderTrackingSection');
+            
+            if (settingsSection.classList.contains('hidden')) {
+                // Show settings, hide others
+                menuSection.classList.add('hidden');
+                trackingSection.classList.add('hidden');
+                settingsSection.classList.remove('hidden');
+                loadUserSettings();
+            } else {
+                // Hide settings, show menu
+                settingsSection.classList.add('hidden');
+                trackingSection.classList.add('hidden');
+                menuSection.classList.remove('hidden');
+            }
+        }
+
+        function showUserSettings() {
+            document.getElementById('menuSection').classList.add('hidden');
+            document.getElementById('orderTrackingSection').classList.add('hidden');
+            document.getElementById('userSettingsSection').classList.remove('hidden');
+            loadUserSettings();
+        }
+
+        function backToMenuFromSettings() {
+            document.getElementById('userSettingsSection').classList.add('hidden');
+            document.getElementById('menuSection').classList.remove('hidden');
+        }
+
+        function loadUserSettings() {
+            if (!currentUser) return;
+            
+            // เก็บข้อมูลเดิมไว้สำหรับการยกเลิก
+            originalUserData = JSON.parse(JSON.stringify(currentUser));
+            
+            // Load current user data into form
+            document.getElementById('settingsName').value = currentUser.name || '';
+            document.getElementById('settingsUsername').value = currentUser.username || '';
+            document.getElementById('settingsEmail').value = currentUser.email || '';
+            document.getElementById('settingsPhone').value = currentUser.phone || '';
+            document.getElementById('settingsFloor').value = currentUser.floor || '';
+            document.getElementById('settingsRoom').value = currentUser.room || '';
+            
+            // Clear password fields
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmNewPassword').value = '';
+            
+            // Load profile picture
+            loadProfilePicture();
+        }
+
+        function loadProfilePicture() {
+            const profileImage = document.getElementById('profileImage');
+            const profileInitials = document.getElementById('profileInitials');
+            const removeBtn = document.getElementById('removeImageBtn');
+            
+            if (currentUser.profilePicture) {
+                profileImage.src = currentUser.profilePicture;
+                profileImage.classList.remove('hidden');
+                profileInitials.classList.add('hidden');
+                removeBtn.classList.remove('hidden');
+            } else {
+                profileImage.classList.add('hidden');
+                profileInitials.classList.remove('hidden');
+                removeBtn.classList.add('hidden');
+                
+                // Generate initials from name
+                const names = (currentUser.name || '').split(' ');
+                const initials = names.map(name => name.charAt(0)).join('').toUpperCase().slice(0, 2);
+                profileInitials.textContent = initials || '??';
+            }
+        }
+
+        function handleProfileImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Check file size (max 10MB)
+            if (file.size > 10 * 2048 * 2048) {
+                alert('ไฟล์รูปภาพต้องมีขนาดไม่เกิน 20MB');
+                return;
+            }
+            
+            // Check file type
+            if (!file.type.startsWith('image/')) {
+                alert('กรุณาเลือกไฟล์รูปภาพเท่านั้น');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const profileImage = document.getElementById('profileImage');
+                const profileInitials = document.getElementById('profileInitials');
+                const removeBtn = document.getElementById('removeImageBtn');
+                
+                profileImage.src = e.target.result;
+                profileImage.classList.remove('hidden');
+                profileInitials.classList.add('hidden');
+                removeBtn.classList.remove('hidden');
+                
+                // Store in currentUser (will be saved when form is submitted)
+                currentUser.profilePicture = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeProfileImage() {
+            const profileImage = document.getElementById('profileImage');
+            const profileInitials = document.getElementById('profileInitials');
+            const removeBtn = document.getElementById('removeImageBtn');
+            const fileInput = document.getElementById('profileImageInput');
+            
+            profileImage.classList.add('hidden');
+            profileInitials.classList.remove('hidden');
+            removeBtn.classList.add('hidden');
+            fileInput.value = '';
+            
+            // Remove from currentUser
+            delete currentUser.profilePicture;
+            
+            // Generate initials
+            const names = (currentUser.name || '').split(' ');
+            const initials = names.map(name => name.charAt(0)).join('').toUpperCase().slice(0, 2);
+            profileInitials.textContent = initials || '??';
+        }
+
+        function saveUserSettings(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('settingsName').value;
+            const username = document.getElementById('settingsUsername').value;
+            const floor = document.getElementById('settingsFloor').value;
+            const room = document.getElementById('settingsRoom').value;
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+            
+            // Validate password change if provided
+            if (currentPassword || newPassword || confirmNewPassword) {
+                if (!currentPassword) {
+                    alert('กรุณากรอกรหัสผ่านปัจจุบัน');
+                    return;
+                }
+                
+                if (currentPassword !== currentUser.password) {
+                    alert('รหัสผ่านปัจจุบันไม่ถูกต้อง');
+                    return;
+                }
+                
+                if (!newPassword) {
+                    alert('กรุณากรอกรหัสผ่านใหม่');
+                    return;
+                }
+                
+                if (newPassword !== confirmNewPassword) {
+                    alert('รหัสผ่านใหม่ไม่ตรงกัน');
+                    return;
+                }
+                
+                if (newPassword.length < 6) {
+                    alert('รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร');
+                    return;
+                }
+            }
+            
+            // Update user data
+            currentUser.name = name;
+            currentUser.username = username;
+            currentUser.floor = floor;
+            currentUser.room = room;
+            
+            // Update password if provided
+            if (newPassword) {
+                currentUser.password = newPassword;
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('user_' + currentUser.email, JSON.stringify(currentUser));
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            // อัปเดตข้อมูลเดิมให้เป็นข้อมูลใหม่ที่บันทึกแล้ว
+            originalUserData = JSON.parse(JSON.stringify(currentUser));
+            
+            // Update welcome text
+            const userDisplay = currentUser.username ? 
+                `Hi, ${currentUser.username} (${currentUser.name}) เด้ก ${currentUser.floor} ห้อง ${currentUser.room}` :
+                `Hi, ${currentUser.name}`;
+            document.getElementById('welcomeText').textContent = userDisplay;
+            
+            // Update header profile picture
+            updateHeaderProfile();
+            
+            // Show success modal instead of alert
+            document.getElementById('settingsSuccessModal').classList.remove('hidden');
+            
+            // Clear password fields
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmNewPassword').value = '';
+        }
+
+        function cancelSettingsChanges() {
+            if (!originalUserData) return;
+            
+            // คืนค่าข้อมูลเดิม
+            currentUser = JSON.parse(JSON.stringify(originalUserData));
+            
+            // โหลดข้อมูลเดิมกลับมาในฟอร์ม
+            document.getElementById('settingsName').value = currentUser.name || '';
+            document.getElementById('settingsUsername').value = currentUser.username || '';
+            document.getElementById('settingsEmail').value = currentUser.email || '';
+            document.getElementById('settingsPhone').value = currentUser.phone || '';
+            document.getElementById('settingsFloor').value = currentUser.floor || '';
+            document.getElementById('settingsRoom').value = currentUser.room || '';
+            
+            // Clear password fields
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmNewPassword').value = '';
+            
+            // โหลดรูปโปรไฟล์เดิม
+            loadProfilePicture();
+            
+            // Update header profile picture
+            updateHeaderProfile();
+            
+            // แสดงข้อความยืนยัน
+            alert('ยกเลิกการเปลี่ยนแปลงเรียบร้อยแล้ว ข้อมูลกลับสู่สถานะเดิม');
+        }
+
+        function resetSettingsForm() {
+            loadUserSettings();
+        }
+
+        function logout() {
+            document.getElementById('logoutModal').classList.remove('hidden');
+        }
+
+        function confirmLogout() {
+            currentUser = null;
+            cart = [];
+            localStorage.removeItem('currentUser');
+            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('menuSection').classList.add('hidden');
+            document.getElementById('userSettingsSection').classList.add('hidden');
+            document.getElementById('userInfo').classList.add('hidden');
+            document.getElementById('cartSummary').classList.add('hidden');
+            document.getElementById('orderTrackingSection').classList.add('hidden');
+            document.getElementById('logoutModal').classList.add('hidden');
+        }
+
+        function cancelLogout() {
+            document.getElementById('logoutModal').classList.add('hidden');
+        }
+
+        function showMenuSection() {
+            document.getElementById('authSection').classList.add('hidden');
+            const menuSection = document.getElementById('menuSection');
+            menuSection.classList.remove('hidden');
+            menuSection.classList.add('page-enter');
+            document.getElementById('userInfo').classList.remove('hidden');
+            
+            // Display user info with username, floor, and room
+            const userDisplay = currentUser.username ? 
+                `Hi, ${currentUser.username} (${currentUser.name}) เด้ก ${currentUser.floor} ห้อง ${currentUser.room}` :
+                `Hi, ${currentUser.name}`;
+            document.getElementById('welcomeText').textContent = userDisplay;
+            
+            // Update header profile picture
+            updateHeaderProfile();
+            
+            // Save login state
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            renderRestaurants();
+        }
+
+        function updateHeaderProfile() {
+            const headerProfileImage = document.getElementById('headerProfileImage');
+            const headerProfileInitials = document.getElementById('headerProfileInitials');
+            
+            if (currentUser.profilePicture) {
+                headerProfileImage.src = currentUser.profilePicture;
+                headerProfileImage.classList.remove('hidden');
+                headerProfileInitials.classList.add('hidden');
+            } else {
+                headerProfileImage.classList.add('hidden');
+                headerProfileInitials.classList.remove('hidden');
+                
+                // Generate initials from name
+                const names = (currentUser.name || '').split(' ');
+                const initials = names.map(name => name.charAt(0)).join('').toUpperCase().slice(0, 2);
+                headerProfileInitials.textContent = initials || '??';
+            }
+        }
+
+        // Restaurant functions
+        function renderRestaurants() {
+            document.getElementById('restaurantGrid').classList.remove('hidden');
+            document.getElementById('restaurantMenuSection').classList.add('hidden');
+            
+            const restaurantGrid = document.getElementById('restaurantGrid');
+            const filteredRestaurants = currentCategory === 'all' ? restaurants : restaurants.filter(restaurant => restaurant.category === currentCategory);
+            
+            restaurantGrid.innerHTML = filteredRestaurants.map((restaurant, index) => `
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover-lift cursor-pointer card-simultaneous" onclick="showRestaurantMenu(${restaurant.id})">
+                    <div class="relative h-40 overflow-hidden">
+                        <img src="${restaurant.image}" alt="${restaurant.name}" class="w-full h-full object-cover hover-scale" 
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="w-full h-full bg-gradient-to-br from-orange-100 to-red-100 flex items-center justify-center text-4xl hover-rotate absolute inset-0" style="display: none;">
+                            🍽️
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-1">${restaurant.name}</h3>
+                        <p class="text-gray-600 text-sm text-center">${restaurant.description}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterRestaurant(category) {
+            currentCategory = category;
+            
+            // Update category buttons
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('bg-orange-500', 'text-white');
+                btn.classList.add('bg-gray-200', 'text-gray-700');
+            });
+            event.target.classList.remove('bg-gray-200', 'text-gray-700');
+            event.target.classList.add('bg-orange-500', 'text-white');
+            
+            renderRestaurants();
+        }
+
+        function showRestaurantMenu(restaurantId) {
+            currentRestaurant = restaurants.find(r => r.id === restaurantId);
+            const menu = menuData[restaurantId];
+            
+            document.getElementById('restaurantGrid').classList.add('hidden');
+            document.getElementById('restaurantMenuSection').classList.remove('hidden');
+            
+            document.getElementById('restaurantName').textContent = currentRestaurant.name;
+            document.getElementById('restaurantDescription').textContent = currentRestaurant.description;
+            
+            const menuGrid = document.getElementById('menuGrid');
+            menuGrid.innerHTML = menu.map((item, index) => `
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover-lift card-simultaneous">
+                    <div class="relative h-40 overflow-hidden">
+                        <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover hover-scale" 
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="w-full h-full bg-gradient-to-br from-orange-100 to-red-100 flex items-center justify-center text-4xl hover-rotate" style="display: none;">
+                            🍽️
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-1">${item.name}</h3>
+                        <p class="text-xl font-bold text-orange-500 mb-3">฿${item.basePrice}</p>
+                        <button onclick="showItemOptions(${item.id})" 
+                                class="w-full bg-gradient-to-r from-purple-800 to-red-700 text-white py-2 rounded-lg font-medium hover-glow gradient-shift text-sm">
+                            เลือกตัวเลือก
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function backToRestaurants() {
+            document.getElementById('restaurantGrid').classList.remove('hidden');
+            document.getElementById('restaurantMenuSection').classList.add('hidden');
+            currentRestaurant = null;
+        }
+
+        // Item options functions
+        function showItemOptions(itemId) {
+            // Find item from all menus
+            let item = null;
+            for (const restaurantId in menuData) {
+                const menu = menuData[restaurantId];
+                item = menu.find(menuItem => menuItem.id === itemId);
+                if (item) break;
+            }
+            
+            if (!item) return;
+            
+            currentItem = item;
+            selectedOptions = {};
+            
+            document.getElementById('itemName').textContent = item.name;
+            document.getElementById('itemPrice').textContent = `฿${item.basePrice}`;
+            
+            const optionsContent = document.getElementById('itemOptionsContent');
+            optionsContent.innerHTML = '';
+            
+            // Generate options HTML
+            for (const optionKey in item.options) {
+                const option = item.options[optionKey];
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'space-y-3';
+                
+                optionDiv.innerHTML = `
+                    <h4 class="font-semibold text-gray-800">${option.label}</h4>
+                    <div class="space-y-2">
+                        ${option.choices.map(choice => `
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="${option.type}" name="${optionKey}" value="${choice.id}" 
+                                       onchange="updateSelectedOptions('${optionKey}', '${choice.id}', ${choice.price}, '${option.type}')"
+                                       class="w-4 h-4 text-orange-500 border-gray-300 focus:ring-orange-500">
+                                <span class="text-gray-700">${choice.name}</span>
+                                ${choice.price > 0 ? `<span class="text-orange-500 font-medium">+฿${choice.price}</span>` : ''}
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                
+                optionsContent.appendChild(optionDiv);
+            }
+            
+            const modal = document.getElementById('itemOptionsModal');
+            modal.classList.remove('hidden');
+            modal.querySelector('.bg-white').classList.add('modal-enter');
+        }
+
+        function updateSelectedOptions(optionKey, choiceId, price, type) {
+            if (type === 'radio') {
+                selectedOptions[optionKey] = [{ id: choiceId, price: price }];
+            } else if (type === 'checkbox') {
+                if (!selectedOptions[optionKey]) {
+                    selectedOptions[optionKey] = [];
+                }
+                
+                const existingIndex = selectedOptions[optionKey].findIndex(item => item.id === choiceId);
+                if (existingIndex >= 0) {
+                    selectedOptions[optionKey].splice(existingIndex, 1);
+                } else {
+                    selectedOptions[optionKey].push({ id: choiceId, price: price });
+                }
+            }
+            
+            // Update price display
+            let totalPrice = currentItem.basePrice;
+            for (const optionKey in selectedOptions) {
+                selectedOptions[optionKey].forEach(choice => {
+                    totalPrice += choice.price;
+                });
+            }
+            
+            document.getElementById('itemPrice').textContent = `฿${totalPrice}`;
+        }
+
+        function closeItemOptionsModal() {
+            document.getElementById('itemOptionsModal').classList.add('hidden');
+            currentItem = null;
+            selectedOptions = {};
+        }
+
+        function addItemToCart() {
+            if (!currentItem) return;
+            
+            // Calculate final price
+            let finalPrice = currentItem.basePrice;
+            for (const optionKey in selectedOptions) {
+                selectedOptions[optionKey].forEach(choice => {
+                    finalPrice += choice.price;
+                });
+            }
+            
+            // Create cart item with options
+            const cartItem = {
+                id: currentItem.id + '_' + Date.now(), // Unique ID for cart
+                originalId: currentItem.id,
+                name: currentItem.name,
+                emoji: currentItem.emoji,
+                price: finalPrice,
+                basePrice: currentItem.basePrice,
+                options: JSON.parse(JSON.stringify(selectedOptions)), // Deep copy
+                restaurantName: currentRestaurant.name,
+                quantity: 1
+            };
+            
+            cart.push(cartItem);
+            updateCartSummary();
+            closeItemOptionsModal();
+        }
+
+        // Cart functions
+        function addToCart(itemId) {
+            // This function is now replaced by addItemToCart
+            // Keep for compatibility but redirect to options
+            showItemOptions(itemId);
+        }
+
+        function updateCartSummary() {
+            const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+            const cartTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            
+            document.getElementById('cartCount').textContent = `${cartCount} รายการ`;
+            document.getElementById('cartTotal').textContent = `฿${cartTotal}`;
+            
+            if (cartCount > 0) {
+                document.getElementById('cartSummary').classList.remove('hidden');
+            } else {
+                document.getElementById('cartSummary').classList.add('hidden');
+            }
+        }
+
+        function showOrderSummary() {
+            const orderItems = document.getElementById('orderItems');
+            const orderTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            
+            orderItems.innerHTML = cart.map(item => {
+                // Format options display
+                let optionsText = '';
+                if (item.options) {
+                    const optionTexts = [];
+                    for (const optionKey in item.options) {
+                        const choices = item.options[optionKey];
+                        if (choices && choices.length > 0) {
+                            const choiceNames = choices.map(choice => {
+                                // Find choice name from menu data
+                                let choiceName = choice.id;
+                                for (const restaurantId in menuData) {
+                                    const menu = menuData[restaurantId];
+                                    const menuItem = menu.find(mi => mi.id === item.originalId);
+                                    if (menuItem && menuItem.options[optionKey]) {
+                                        const foundChoice = menuItem.options[optionKey].choices.find(c => c.id === choice.id);
+                                        if (foundChoice) {
+                                            choiceName = foundChoice.name;
+                                            break;
+                                        }
+                                    }
+                                }
+                                return choiceName;
+                            });
+                            optionTexts.push(choiceNames.join(', '));
+                        }
+                    }
+                    if (optionTexts.length > 0) {
+                        optionsText = `<p class="text-xs text-gray-500">${optionTexts.join(' | ')}</p>`;
+                    }
+                }
+                
+                return `
+                    <div class="flex justify-between items-center p-3 md:p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center space-x-2 md:space-x-3">
+                            <div class="w-8 h-8 md:w-10 md:h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-500 font-bold text-sm">
+                                ${item.name.charAt(0)}
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-sm md:text-base">${item.name}</h4>
+                                <p class="text-xs text-gray-500">${item.restaurantName}</p>
+                                ${optionsText}
+                                <p class="text-xs md:text-sm text-gray-600">฿${item.price} x ${item.quantity}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-1 md:space-x-2">
+                            <button onclick="updateQuantity('${item.id}', -1)" class="w-6 h-6 md:w-8 md:h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 text-sm">-</button>
+                            <span class="w-6 md:w-8 text-center text-sm">${item.quantity}</span>
+                            <button onclick="updateQuantity('${item.id}', 1)" class="w-6 h-6 md:w-8 md:h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 text-sm">+</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('orderTotal').textContent = `฿${orderTotal}`;
+            document.getElementById('orderModal').classList.remove('hidden');
+        }
+
+        function updateQuantity(itemId, change) {
+            const item = cart.find(cartItem => cartItem.id === itemId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    cart = cart.filter(cartItem => cartItem.id !== itemId);
+                }
+                updateCartSummary();
+                showOrderSummary();
+            }
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModal').classList.add('hidden');
+        }
+
+        function confirmOrder() {
+            const address = document.getElementById('deliveryAddress').value;
+            if (!address.trim()) {
+                alert('กรุณากรอกห้องและตึกที่ต้องการส่ง');
+                return;
+            }
+
+            const orderData = {
+                orderId: 'ORD' + Date.now(),
+                customer: currentUser,
+                items: cart,
+                total: cart.reduce((total, item) => total + (item.price * item.quantity), 0),
+                address: address,
+                timestamp: new Date().toLocaleString('th-TH'),
+                status: 'ordered',
+                estimatedTime: 20
+            };
+
+            // Save order to user's order history
+            const savedOrders = localStorage.getItem(`orders_${currentUser.email}`);
+            const existingOrders = savedOrders ? JSON.parse(savedOrders) : [];
+            existingOrders.push(orderData);
+            localStorage.setItem(`orders_${currentUser.email}`, JSON.stringify(existingOrders));
+
+            // Update userOrders array
+            userOrders = existingOrders;
+
+            // Start order progress simulation
+            simulateOrderProgress(orderData.orderId);
+
+            // In a real application, this would be sent to the server
+            console.log('Order sent to restaurant:', orderData);
+            
+            // Show confirmation
+            showOrderConfirmation(orderData);
+            
+            // Clear cart
+            cart = [];
+            updateCartSummary();
+            closeOrderModal();
+        }
+
+        function showOrderConfirmation(orderData) {
+            const orderDetails = document.getElementById('orderDetails');
+            orderDetails.innerHTML = `
+                <div class="space-y-2">
+                    <p><strong>หมายเลขออร์เดอร์:</strong> ${orderData.orderId}</p>
+                    <p><strong>ลูกค้า:</strong> ${orderData.customer.name}</p>
+                    ${orderData.customer.username ? `<p><strong>Username:</strong> ${orderData.customer.username}</p>` : ''}
+                    <p><strong>เบอร์โทร:</strong> ${orderData.customer.phone}</p>
+                    ${orderData.customer.floor && orderData.customer.room ? 
+                        `<p><strong>ตำแหน่ง:</strong> ${orderData.customer.floor} ห้อง ${orderData.customer.room}</p>` : ''}
+                    <p><strong>ส่งที่:</strong> ${orderData.address}</p>
+                    <p><strong>ยอดรวม:</strong> ฿${orderData.total}</p>
+                    <p><strong>เวลา:</strong> ${orderData.timestamp}</p>
+                </div>
+            `;
+            document.getElementById('confirmationModal').classList.remove('hidden');
+        }
+
+        function closeConfirmationModal() {
+            document.getElementById('confirmationModal').classList.add('hidden');
+        }
+
+        function closeSettingsSuccessModal() {
+            document.getElementById('settingsSuccessModal').classList.add('hidden');
+        }
+
+        // Order tracking functions
+        function toggleOrderTracking() {
+            const trackingSection = document.getElementById('orderTrackingSection');
+            const menuSection = document.getElementById('menuSection');
+            const settingsSection = document.getElementById('userSettingsSection');
+            
+            if (trackingSection.classList.contains('hidden')) {
+                // Show tracking, hide others
+                menuSection.classList.add('hidden');
+                settingsSection.classList.add('hidden');
+                trackingSection.classList.remove('hidden');
+                loadUserOrders();
+            } else {
+                // Hide tracking, show menu
+                trackingSection.classList.add('hidden');
+                settingsSection.classList.add('hidden');
+                menuSection.classList.remove('hidden');
+            }
+        }
+
+        function showOrderTracking() {
+            document.getElementById('menuSection').classList.add('hidden');
+            document.getElementById('userSettingsSection').classList.add('hidden');
+            document.getElementById('orderTrackingSection').classList.remove('hidden');
+            loadUserOrders();
+        }
+
+        function backToMenu() {
+            document.getElementById('orderTrackingSection').classList.add('hidden');
+            document.getElementById('userSettingsSection').classList.add('hidden');
+            document.getElementById('menuSection').classList.remove('hidden');
+        }
+
+        function loadUserOrders() {
+            // Load orders from localStorage
+            const savedOrders = localStorage.getItem(`orders_${currentUser.email}`);
+            userOrders = savedOrders ? JSON.parse(savedOrders) : [];
+            
+            renderOrdersList();
+        }
+
+        function renderOrdersList() {
+            const ordersList = document.getElementById('ordersList');
+            const noOrders = document.getElementById('noOrders');
+            
+            if (userOrders.length === 0) {
+                ordersList.classList.add('hidden');
+                noOrders.classList.remove('hidden');
+                return;
+            }
+            
+            ordersList.classList.remove('hidden');
+            noOrders.classList.add('hidden');
+            
+            // Sort orders by timestamp (newest first)
+            const sortedOrders = [...userOrders].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            ordersList.innerHTML = sortedOrders.map(order => {
+                const statusInfo = getOrderStatusInfo(order.status);
+                const progress = getOrderProgress(order.status);
+                
+                return `
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800">ออร์เดอร์ #${order.orderId}</h3>
+                                <p class="text-gray-600">${order.timestamp}</p>
+                                <p class="text-lg font-semibold text-orange-500">฿${order.total}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="inline-block px-3 py-1 rounded-full text-sm font-medium ${statusInfo.bgColor} ${statusInfo.textColor}">
+                                    ${statusInfo.icon} ${statusInfo.text}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Progress Bar -->
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs text-gray-500 mb-2">
+                                <span>สั่งซื้อ</span>
+                                <span>กำลังทำ</span>
+                                <span>กำลังส่ง</span>
+                                <span>เสร็จสิ้น</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-orange-500 to-red-500 h-2 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Order Items -->
+                        <div class="border-t pt-4">
+                            <h4 class="font-semibold text-gray-800 mb-2">รายการอาหาร:</h4>
+                            <div class="space-y-2">
+                                ${order.items.map(item => `
+                                    <div class="flex justify-between items-center text-sm">
+                                        <span>${item.name} (${item.restaurantName})</span>
+                                        <span>x${item.quantity} = ฿${item.price * item.quantity}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="mt-2 pt-2 border-t">
+                                <p class="text-sm text-gray-600"><strong>ส่งที่:</strong> ${order.address}</p>
+                            </div>
+                        </div>
+                        
+                        ${order.estimatedTime ? `
+                            <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+                                <p class="text-sm text-blue-800">
+                                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    เวลาโดยประมาณ: ${order.estimatedTime} นาที
+                                </p>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getOrderStatusInfo(status) {
+            const statusMap = {
+                'ordered': {
+                    text: 'รับออร์เดอร์แล้ว',
+                    icon: '📝',
+                    bgColor: 'bg-blue-100',
+                    textColor: 'text-blue-800'
+                },
+                'preparing': {
+                    text: 'กำลังทำอาหาร',
+                    icon: '👨‍🍳',
+                    bgColor: 'bg-yellow-100',
+                    textColor: 'text-yellow-800'
+                },
+                'delivering': {
+                    text: 'กำลังจัดส่ง',
+                    icon: '🚗',
+                    bgColor: 'bg-orange-100',
+                    textColor: 'text-orange-800'
+                },
+                'delivered': {
+                    text: 'จัดส่งเสร็จสิ้น',
+                    icon: '✅',
+                    bgColor: 'bg-green-100',
+                    textColor: 'text-green-800'
+                }
+            };
+            
+            return statusMap[status] || statusMap['ordered'];
+        }
+
+        function getOrderProgress(status) {
+            const progressMap = {
+                'ordered': 25,
+                'preparing': 50,
+                'delivering': 75,
+                'delivered': 100
+            };
+            
+            return progressMap[status] || 25;
+        }
+
+        function simulateOrderProgress(orderId) {
+            const order = userOrders.find(o => o.orderId === orderId);
+            if (!order) return;
+            
+            const statusSequence = ['ordered', 'preparing', 'delivering', 'delivered'];
+            const timeIntervals = [2000, 8000, 6000]; // 2s, 8s, 6s intervals
+            
+            let currentStatusIndex = statusSequence.indexOf(order.status);
+            
+            if (currentStatusIndex < statusSequence.length - 1) {
+                orderStatusTimers[orderId] = setTimeout(() => {
+                    currentStatusIndex++;
+                    order.status = statusSequence[currentStatusIndex];
+                    
+                    // Update estimated time
+                    if (order.status === 'preparing') {
+                        order.estimatedTime = 15;
+                    } else if (order.status === 'delivering') {
+                        order.estimatedTime = 5;
+                    } else if (order.status === 'delivered') {
+                        delete order.estimatedTime;
+                    }
+                    
+                    // Save updated orders
+                    localStorage.setItem(`orders_${currentUser.email}`, JSON.stringify(userOrders));
+                    
+                    // Re-render if tracking page is visible
+                    if (!document.getElementById('orderTrackingSection').classList.contains('hidden')) {
+                        renderOrdersList();
+                    }
+                    
+                    // Continue simulation
+                    if (currentStatusIndex < statusSequence.length - 1) {
+                        simulateOrderProgress(orderId);
+                    }
+                }, timeIntervals[currentStatusIndex] || 5000);
+            }
+        }
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already logged in
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showMenuSection();
+                
+                // Load user orders
+                const savedOrders = localStorage.getItem(`orders_${currentUser.email}`);
+                userOrders = savedOrders ? JSON.parse(savedOrders) : [];
+                
+                // Resume order progress simulation for active orders
+                userOrders.forEach(order => {
+                    if (order.status !== 'delivered') {
+                        simulateOrderProgress(order.orderId);
+                    }
+                });
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'979d6d6866c974d4',t:'MTc1Njk4ODI4NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
